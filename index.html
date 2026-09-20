@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simranjeet Singh — Android Developer</title>
+<meta name="description" content="Simranjeet Singh — Android Developer. Kotlin, MVVM, Google Maps SDK, ride-booking, fintech and IoT apps shipped to production." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%8D%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0A0D1F;
+    --panel:#151A38;
+    --panel-2:#1C2248;
+    --line:#2E3568;
+    --line-soft:#242A54;
+    --text:#F3F5FF;
+    --text-dim:#A7ADDA;
+    --text-faint:#6E74A8;
+
+    --blue:#5B8CFF;
+    --purple:#B24BFF;
+    --cyan:#2FE3CE;
+    --pink:#FF4FA0;
+    --orange:#FFA14A;
+
+    --aq-blue:#00C2FF;
+    --aq-turq:#3FE9C9;
+    --aq-silver:#CBD5E8;
+    --grad-aqua: linear-gradient(100deg, var(--aq-blue), var(--aq-turq));
+
+    --grad-main: linear-gradient(100deg, var(--blue), var(--purple));
+
+    --sans:'Inter', system-ui, -apple-system, sans-serif;
+    --display:'Sora', var(--sans);
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+
+    --max:1120px;
+    --edge:clamp(20px, 5vw, 64px);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *,*::before,*::after{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+
+  .wrap{max-width:var(--max); margin:0 auto; padding-left:var(--edge); padding-right:var(--edge);}
+
+  h1,h2,h3{font-family:var(--display); margin:0; font-weight:700; letter-spacing:-0.01em;}
+
+  ::selection{background:var(--purple); color:#0A0D1F;}
+
+  a:focus-visible, button:focus-visible, summary:focus-visible{
+    outline:2px solid var(--blue);
+    outline-offset:3px;
+    border-radius:2px;
+  }
+
+  /* ---------- glow backdrop ---------- */
+  .glow-bg{position:fixed; inset:0; z-index:-2; pointer-events:none; overflow:hidden; background:var(--bg);}
+  .glow-bg .orb{position:absolute; border-radius:50%; filter:blur(90px); opacity:0.55;}
+  .glow-bg .orb-1{width:520px; height:520px; top:-180px; left:-120px; background:radial-gradient(circle, var(--blue), transparent 70%);}
+  .glow-bg .orb-2{width:600px; height:600px; top:-260px; right:-220px; background:radial-gradient(circle, var(--purple), transparent 70%); opacity:0.4;}
+  .glow-bg .orb-3{width:480px; height:480px; bottom:-260px; left:35%; background:radial-gradient(circle, var(--cyan), transparent 70%); opacity:0.22;}
+
+  .grid-bg{
+    position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:56px 56px;
+    opacity:0.4;
+    mask-image:radial-gradient(ellipse 70% 55% at 50% 0%, black 35%, transparent 85%);
+  }
+
+  .grain{
+    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.035; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:40;
+    backdrop-filter:blur(12px);
+    background:rgba(10,13,31,0.7);
+    border-bottom:1px solid var(--line);
+    transition:box-shadow .3s ease, border-color .3s ease;
+  }
+  header.scrolled{
+    box-shadow:0 12px 32px -20px rgba(0,0,0,0.6);
+    border-color:var(--line-soft);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px var(--edge);
+    max-width:var(--max); margin:0 auto;
+  }
+  .brand{
+    font-family:var(--mono); font-size:14px; color:var(--text);
+    display:flex; align-items:center; gap:9px; text-decoration:none;
+  }
+  .brand .dot{width:9px;height:9px;border-radius:50%; background:var(--grad-main); box-shadow:0 0 12px 2px rgba(91,140,255,0.6);}
+
+  nav.links{display:flex; gap:28px;}
+  nav.links a{
+    font-size:14px; color:var(--text-dim); text-decoration:none;
+    border-bottom:1px solid transparent; padding-bottom:2px;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  nav.links a:hover{color:var(--text); border-color:var(--cyan);}
+  nav.links a.nav-contact:hover{border-color:var(--aq-turq); color:var(--aq-turq);}
+
+  .nav-toggle{display:none;}
+  .burger{display:none;}
+
+  @media (max-width:720px){
+    nav.links{
+      position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--panel);
+      border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition:max-height .25s ease;
+    }
+    nav.links a{padding:14px var(--edge); border-bottom:1px solid var(--line-soft);}
+    .nav-toggle:checked ~ nav.links{max-height:260px;}
+    .burger{
+      display:flex; flex-direction:column; gap:4px;
+      background:none; border:0; cursor:pointer; padding:8px;
+    }
+    .burger span{width:20px;height:2px;background:var(--text);}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    padding:88px var(--edge) 64px;
+    max-width:var(--max); margin:0 auto;
+    display:grid; grid-template-columns:1.15fr 0.85fr; gap:48px; align-items:center;
+  }
+  .kicker{
+    font-family:var(--mono); font-size:13px; color:var(--cyan);
+    margin:0 0 18px;
+  }
+  .hero h1{font-size:clamp(2.1rem, 4.6vw, 3.3rem); line-height:1.06;}
+  .hero h1 .accent{
+    background:linear-gradient(100deg, var(--blue), var(--purple), var(--cyan), var(--purple), var(--blue));
+    background-size:300% 100%;
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:gradientShift 7s ease-in-out infinite;
+  }
+  @keyframes gradientShift{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+  }
+  .hero p.lede{
+    color:var(--text-dim); font-size:1.08rem; max-width:56ch;
+    margin:22px 0 30px;
+  }
+  .cta-row{display:flex; flex-wrap:wrap; gap:12px;}
+  .btn{
+    position:relative; overflow:hidden;
+    display:inline-flex; align-items:center; gap:8px;
+    padding:11px 22px; border-radius:9px;
+    font-size:14.5px; font-weight:600; text-decoration:none; letter-spacing:0.01em;
+    border:1px solid var(--line);
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .btn::after{
+    content:''; position:absolute; top:0; left:-60%; width:35%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform:skewX(-20deg); transition:left .65s cubic-bezier(.2,.7,.2,1);
+    pointer-events:none;
+  }
+  .btn:hover::after{left:130%;}
+  .btn-primary{
+    background:var(--grad-main); color:#fff; border-color:transparent;
+    box-shadow:0 0 0 0 rgba(91,140,255,0);
+  }
+  .btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 32px -8px rgba(91,140,255,0.6);}
+  .btn-ghost{
+    color:var(--aq-silver);
+    background:rgba(63,233,201,0.05);
+    border-color:rgba(63,233,201,0.35);
+  }
+  .btn-ghost:hover{
+    border-color:var(--aq-blue); color:#fff; transform:translateY(-2px);
+    box-shadow:0 10px 26px -10px rgba(0,194,255,0.5);
+  }
+
+  .telemetry{
+    margin-top:36px; display:flex; gap:28px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:12.5px; color:var(--text-faint);
+  }
+  .telemetry b{
+    color:var(--text); font-size:17px; font-family:var(--display); font-weight:700; display:block; margin-bottom:2px;
+  }
+
+  /* ---------- scroll reveal ---------- */
+  .reveal{
+    opacity:0; transform:translateY(18px);
+    transition:opacity .75s cubic-bezier(.2,.7,.2,1), transform .75s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  .hero-art{position:relative; aspect-ratio:1/1; max-width:420px; justify-self:end;}
+  .hero-art svg{width:100%; height:100%; overflow:visible;}
+  .route-line{fill:none; stroke:url(#routeGrad); stroke-width:3; stroke-linecap:round;}
+  .route-dot{fill:var(--text-faint);}
+  .route-pin-wrap{offset-path:path('M20,300 C120,50 250,430 430,120'); offset-rotate:0deg;}
+  .coord-label{font-family:var(--mono); font-size:11px; fill:var(--text-faint);}
+
+  @media (max-width:840px){
+    .hero{grid-template-columns:1fr; padding-top:56px;}
+    .hero-art{justify-self:start; max-width:280px; margin-top:8px;}
+  }
+
+  /* ---------- section shell ---------- */
+  section{padding:76px var(--edge);}
+  .section-inner{max-width:var(--max); margin:0 auto;}
+  .section-head{margin-bottom:40px; max-width:60ch;}
+  .section-head h2{font-size:clamp(1.5rem, 2.6vw, 2rem);}
+  .section-head p{color:var(--text-dim); margin:10px 0 0; font-size:1rem;}
+  .section-index{font-family:var(--mono); font-size:12.5px; color:var(--purple); margin:0 0 8px;}
+  #contact .section-index, .contact-panel ~ * .section-index{color:var(--aq-turq);}
+
+  /* ---------- experience / route timeline ---------- */
+  .timeline{position:relative; padding-left:28px;}
+  .timeline::before{
+    content:''; position:absolute; left:5px; top:6px; bottom:6px; width:2px;
+    background:var(--line);
+  }
+  .timeline::after{
+    content:''; position:absolute; left:5px; top:6px; width:2px; height:0;
+    background:var(--grad-main);
+    box-shadow:0 0 12px 1px rgba(91,140,255,0.4);
+    transition:height 1.1s cubic-bezier(.2,.7,.2,1);
+  }
+  .timeline.in-view::after{height:var(--line-h, 0);}
+
+  .job{position:relative; padding-bottom:44px;}
+  .job:last-child{padding-bottom:0;}
+  .job::before{
+    content:''; position:absolute; left:-28px; top:4px;
+    width:12px; height:12px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--line-soft);
+    transition:border-color .3s ease, background .3s ease, box-shadow .3s ease;
+  }
+  .timeline.in-view .job::before{
+    border-color:var(--blue); background:var(--grad-main);
+    box-shadow:0 0 10px 2px rgba(91,140,255,0.55);
+  }
+
+  .job-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px; margin-bottom:6px;}
+  .job-head h3{font-size:1.12rem;}
+  .job-period{font-family:var(--mono); font-size:12.5px; color:var(--cyan);}
+  .job-place{color:var(--text-dim); font-size:0.95rem; margin-bottom:12px;}
+  .job ul{margin:0; padding-left:18px; color:var(--text-dim); font-size:0.96rem;}
+  .job li{margin-bottom:6px;}
+  .job li::marker{color:var(--purple);}
+
+  /* ---------- projects ---------- */
+  .proj-grid{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:18px;
+  }
+  .card{
+    position:relative;
+    grid-column:span 3;
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px;
+    display:flex; flex-direction:column; gap:14px;
+    transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+    transform:perspective(700px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+  }
+  .card::before{
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%), rgba(91,140,255,0.65), rgba(178,75,255,0.25) 45%, transparent 65%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:0; transition:opacity .3s ease; pointer-events:none;
+  }
+  .card:hover::before{opacity:1;}
+  .card.featured{grid-column:span 6;}
+  @media (min-width:900px){ .card.featured{grid-column:span 3;} }
+  a.card{text-decoration:none; color:inherit;}
+  a.card:hover{
+    border-color:rgba(91,140,255,0.4);
+    box-shadow:0 20px 48px -20px rgba(91,140,255,0.55);
+  }
+  @media (hover:none){
+    .card{transform:none !important;}
+  }
+
+  .card-top{display:flex; align-items:center; gap:12px;}
+  .mono-badge{
+    width:40px; height:40px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--display); font-weight:700; font-size:14px; color:#fff;
+    flex-shrink:0;
+  }
+  .card h3{font-size:1.05rem;}
+  .card .role{font-size:12.5px; color:var(--text-faint); font-family:var(--mono);}
+  .card p{margin:0; color:var(--text-dim); font-size:0.94rem;}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:auto;}
+  .chip{
+    font-family:var(--mono); font-size:11px; color:var(--text-dim);
+    background:rgba(255,255,255,0.04); border:1px solid var(--line-soft);
+    padding:4px 8px; border-radius:5px;
+  }
+  .card-stat{
+    font-family:var(--mono); font-size:11.5px; color:var(--cyan);
+  }
+
+  .also-shipped{margin-top:32px; border-top:1px solid var(--line); padding-top:24px;}
+  .also-shipped h4{
+    font-family:var(--mono); font-size:12.5px; color:var(--text-faint);
+    font-weight:400; margin:0 0 14px;
+  }
+  .also-row{display:flex; flex-wrap:wrap; gap:10px 28px;}
+  .also-item{font-size:0.92rem; color:var(--text-dim);}
+  .also-item b{color:var(--text); font-weight:600;}
+
+  /* ---------- skills ---------- */
+  .skill-groups{display:grid; grid-template-columns:repeat(2, 1fr); gap:32px 40px;}
+  @media (max-width:720px){.skill-groups{grid-template-columns:1fr;}}
+  .skill-group h3{font-size:0.98rem; margin-bottom:12px; color:var(--text);}
+  .skill-chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .skill-chip{
+    font-size:13px; color:var(--text-dim);
+    border:1px solid var(--line); padding:6px 12px; border-radius:20px;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .skill-chip:hover{border-color:var(--blue); color:var(--text);}
+
+  /* ---------- contact / footer ---------- */
+  .contact-panel{
+    position:relative; overflow:hidden;
+    background:linear-gradient(135deg, var(--panel), var(--panel-2));
+    border:1px solid rgba(63,233,201,0.3); border-radius:18px;
+    padding:48px var(--edge); display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap;
+  }
+  .contact-panel::before{
+    content:''; position:absolute; width:380px; height:380px; border-radius:50%;
+    background:radial-gradient(circle, var(--aq-blue), transparent 70%);
+    opacity:0.22; filter:blur(60px); top:-160px; right:-100px; pointer-events:none;
+  }
+  .contact-panel::after{
+    content:''; position:absolute; width:280px; height:280px; border-radius:50%;
+    background:radial-gradient(circle, var(--aq-turq), transparent 70%);
+    opacity:0.18; filter:blur(60px); bottom:-140px; left:-80px; pointer-events:none;
+  }
+  .contact-panel h2{font-size:clamp(1.4rem,3vw,2rem); max-width:20ch; position:relative;}
+  .contact-panel h2 .accent{
+    background:var(--grad-aqua); -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .contact-right{display:flex; flex-direction:column; align-items:flex-start; gap:18px; position:relative;}
+  .contact-links{display:flex; flex-direction:column; gap:10px; font-size:0.95rem;}
+  .contact-links a{
+    display:flex; align-items:center; gap:10px;
+    text-decoration:none; color:var(--text-dim);
+    padding:9px 14px 9px 10px; border-radius:9px;
+    border:1px solid transparent;
+    transition:color .18s ease, border-color .18s ease, background .18s ease, transform .18s ease;
+  }
+  .contact-links a:hover{
+    color:var(--text); border-color:rgba(63,233,201,0.35);
+    background:rgba(63,233,201,0.06); transform:translateX(3px);
+  }
+  .contact-links svg{width:18px; height:18px; flex-shrink:0; stroke:var(--aq-turq);}
+  .hire-btn{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:14px 26px; border-radius:10px;
+    font-size:15px; font-weight:700; text-decoration:none; color:#04211D;
+    background:var(--grad-aqua); border:1px solid transparent;
+    box-shadow:0 0 0 0 rgba(0,194,255,0);
+    transition:transform .18s ease, box-shadow .18s ease;
+    position:relative; overflow:hidden;
+  }
+  .hire-btn::after{
+    content:''; position:absolute; top:0; left:-60%; width:35%; height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transform:skewX(-20deg); transition:left .65s cubic-bezier(.2,.7,.2,1);
+  }
+  .hire-btn:hover{transform:translateY(-2px); box-shadow:0 14px 34px -10px rgba(0,194,255,0.55);}
+  .hire-btn:hover::after{left:130%;}
+  .hire-note{font-family:var(--mono); font-size:11.5px; color:var(--text-faint);}
+
+  footer{padding:32px var(--edge) 48px; text-align:center;}
+  footer p{margin:0; color:var(--text-faint); font-size:13px; font-family:var(--mono);}
+</style>
+</head>
+<body>
+
+<div class="glow-bg" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div class="grid-bg" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header>
+  <div class="nav">
+    <a class="brand" href="#top"><span class="dot"></span>simranjeet.dev</a>
+    <input class="nav-toggle" type="checkbox" id="nav-toggle" hidden>
+    <label class="burger" for="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+    <nav class="links">
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact" class="nav-contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="padding-top:88px;">
+    <div>
+      <p class="kicker">Android developer · Mohali, India</p>
+      <h1>Building Android apps that <span class="accent">know where they are</span>, and ship on time.</h1>
+      <p class="lede">3.5+ years writing production Kotlin — real-time ride tracking, dashcam streaming, fintech tools and games, taken from first commit to the Play Store. I lead small teams, cut APK bloat, and keep crash rates near zero.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#work">See the work</a>
+        <a class="btn btn-ghost" href="mailto:simranjeet.singhh.007@gmail.com" target="_blank" rel="noopener">Hire me</a>
+        <a class="btn btn-ghost" href="https://linkedin.com/in/simranjeet-singh-31248b219" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="telemetry" id="telemetry">
+        <div><b><span class="count" data-target="3.5" data-decimals="1">0</span>+ yrs</b>in production Android</div>
+        <div><b><span class="count" data-target="8" data-decimals="0">0</span>+ apps</b>shipped to Play Store</div>
+        <div><b><span class="count" data-target="8" data-decimals="0">0</span> devs</b>led at Pearl Organisation</div>
+        <div><b><span class="count" data-target="4.8" data-decimals="1">0</span>★</b>rating on GeoShift</div>
+      </div>
+    </div>
+
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 460 460" fill="none">
+        <defs>
+          <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5B8CFF"/>
+            <stop offset="55%" stop-color="#B24BFF"/>
+            <stop offset="100%" stop-color="#2FE3CE"/>
+          </linearGradient>
+          <radialGradient id="pinGlow">
+            <stop offset="0%" stop-color="#B24BFF" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#B24BFF" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <path class="route-line" id="routePath" d="M20,300 C120,50 250,430 430,120" stroke-dasharray="1" stroke-dashoffset="1"/>
+        <circle class="route-dot" cx="20" cy="300" r="4"/>
+        <circle class="route-dot" cx="430" cy="120" r="4"/>
+        <text class="coord-label" x="16" y="320">30.7046° N</text>
+        <text class="coord-label" x="380" y="108">start → deploy</text>
+        <g class="route-pin-wrap" id="pinWrap">
+          <circle r="20" fill="url(#pinGlow)"/>
+          <circle r="7" fill="#B24BFF"/>
+          <circle r="12" fill="none" stroke="#5B8CFF" stroke-width="1" opacity="0.5"/>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="section-index">01 — Route so far</p>
+        <h2>Experience</h2>
+        <p>Three stops, one straight line from junior developer to leading an 8-person Android team.</p>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <div class="job reveal">
+          <div class="job-head">
+            <h3>Android Developer</h3>
+            <span class="job-period">Dec 2025 — Present</span>
+          </div>
+          <div class="job-place">Nogiz, Chandigarh</div>
+          <ul>
+            <li>Cut APK size by 30% and removed memory leaks with LeakCanary, alongside faster cold starts via lazy init and ViewBinding.</li>
+            <li>Built Material Design 3 UI with custom Animators and MotionLayout transitions.</li>
+            <li>Shipped GeoShift, Snapcut and Minjo Games to the Play Store, integrating Firebase and Stripe/UPI payments along the way.</li>
+          </ul>
+        </div>
+
+        <div class="job reveal">
+          <div class="job-head">
+            <h3>Senior Android Developer / Assistant Manager</h3>
+            <span class="job-period">Jun 2023 — Dec 2025</span>
+          </div>
+          <div class="job-place">Pearl Organisation, Dehradun</div>
+          <ul>
+            <li>Led a team of 8 developers shipping Android apps on schedule with MVVM, Clean Architecture and GetX.</li>
+            <li>Set up Dagger Hilt-based DI foundations for high-traffic B2B and B2C products.</li>
+            <li>Ran code reviews and mentored junior developers on RxJava, Coroutines and RecyclerView/DiffUtil performance.</li>
+          </ul>
+        </div>
+
+        <div class="job reveal">
+          <div class="job-head">
+            <h3>Junior Android Developer</h3>
+            <span class="job-period">Sep 2022 — Jun 2023</span>
+          </div>
+          <div class="job-place">KDS Tech Solution, Zirakpur</div>
+          <ul>
+            <li>Migrated a legacy Java codebase to Kotlin and rebuilt it on MVVM with Retrofit and Coroutines.</li>
+            <li>Shipped 4 apps including Salamatak's doctor and patient apps, Inspecfly, and a music streaming app.</li>
+            <li>Wired up Zoom SDK, Google Maps and Twilio notifications across the app suite.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="work">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="section-index">02 — Selected work</p>
+        <h2>Projects</h2>
+        <p>Ride-booking, dashcam streaming, fintech and a couple of things built purely for fun.</p>
+      </div>
+
+      <div class="proj-grid">
+
+        <div class="card featured reveal">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#5B8CFF,#B24BFF);">RR</div>
+            <div>
+              <h3>Rapido Ride App</h3>
+              <div class="role">Ride-booking · contributor</div>
+            </div>
+          </div>
+          <p>An Ola/Uber-style platform with real-time map tracking. Added Cronet networking to cut request latency for live location and ride-status updates, and resolved memory leaks that showed up on long GPS-heavy trips.</p>
+          <div class="chips">
+            <span class="chip">Kotlin</span><span class="chip">MVVM</span><span class="chip">Google Maps SDK</span><span class="chip">Cronet</span><span class="chip">Firebase</span>
+          </div>
+        </div>
+
+        <a class="card featured reveal" href="https://play.google.com/store/apps/details?id=com.geoshift.fakegps" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#2FE3CE,#5B8CFF);">GS</div>
+            <div>
+              <h3>GeoShift</h3>
+              <div class="role">GPS route simulation · own build</div>
+            </div>
+          </div>
+          <p>A mock-location and route-simulation tool for developers and QA teams, with adjustable movement speed, saved routes, and a foreground service that keeps updating location in the background without dying.</p>
+          <div class="chips">
+            <span class="chip">Kotlin</span><span class="chip">MVVM</span><span class="chip">Foreground Services</span><span class="chip">Location APIs</span>
+          </div>
+          <div class="card-stat">4.8★ on Google Play</div>
+        </a>
+
+        <div class="card reveal">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#FF4FA0,#B24BFF);">ZP</div>
+            <div><h3>Zump</h3><div class="role">Ride-hailing (Canada) · contributor</div></div>
+          </div>
+          <p>Rider-facing app for a Canada-based ride platform — booking, live tracking and trip-status screens.</p>
+          <div class="chips"><span class="chip">Kotlin</span><span class="chip">Maps SDK</span><span class="chip">REST</span></div>
+        </div>
+
+        <a class="card reveal" href="https://play.google.com/store/apps/details?id=com.ridoo.bid" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#FFA14A,#FF4FA0);">RD</div>
+            <div><h3>Ridoo</h3><div class="role">Local taxi & trucks · contributor</div></div>
+          </div>
+          <p>Local taxi and truck bookings with cash and in-app payment options, published under Travel &amp; Local.</p>
+          <div class="chips"><span class="chip">Kotlin</span><span class="chip">Maps SDK</span></div>
+          <div class="card-stat">10K+ downloads</div>
+        </a>
+
+        <div class="card reveal">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#5B8CFF,#2FE3CE);">TD</div>
+            <div><h3>Tamodvr</h3><div class="role">Dashcam · own build</div></div>
+          </div>
+          <p>Video recording with live RTSP streaming and FTP file management, plus Wi-Fi Direct transfer with no internet needed.</p>
+          <div class="chips"><span class="chip">Kotlin Flows</span><span class="chip">RTSP</span><span class="chip">Wi-Fi Direct</span></div>
+        </div>
+
+        <div class="card reveal">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#B24BFF,#5B8CFF);">SM</div>
+            <div><h3>Stock Market App</h3><div class="role">Fintech · own build</div></div>
+          </div>
+          <p>Real-time market data over REST, with DataStore keeping watchlists available offline.</p>
+          <div class="chips"><span class="chip">MVVM</span><span class="chip">Retrofit</span><span class="chip">DataStore</span></div>
+        </div>
+
+        <a class="card reveal" href="https://play.google.com/store/apps/details?id=com.snapcut.videoeditor" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#FF4FA0,#FFA14A);">SC</div>
+            <div><h3>Snapcut</h3><div class="role">AI video editor · own build</div></div>
+          </div>
+          <p>Trimming, transitions, filters and auto-captions, exporting up to 4K/60fps with a one-tap share pipeline.</p>
+          <div class="chips"><span class="chip">Kotlin</span><span class="chip">Media Processing</span></div>
+        </a>
+
+        <a class="card reveal" href="https://play.google.com/store/apps/details?id=com.minjogames.freeofflinegames" target="_blank" rel="noopener">
+          <div class="card-top">
+            <div class="mono-badge" style="background:linear-gradient(135deg,#2FE3CE,#B24BFF);">MG</div>
+            <div><h3>Minjo Games</h3><div class="role">Instant-play hub · own build</div></div>
+          </div>
+          <p>20,000+ instant-play games in one lightweight WebView shell, built for fast loads and a small footprint.</p>
+          <div class="chips"><span class="chip">Kotlin</span><span class="chip">WebView</span></div>
+        </a>
+
+      </div>
+
+      <div class="also-shipped">
+        <h4>also shipped</h4>
+        <div class="also-row">
+          <span class="also-item"><b>Eskay Investments</b> — SIP tracker & portfolio manager with live REST sync</span>
+          <span class="also-item"><b>School eSolutions</b> — attendance, fees and Twilio-based parent notifications</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-inner">
+      <div class="section-head reveal">
+        <p class="section-index">03 — Toolkit</p>
+        <h2>Skills</h2>
+      </div>
+
+      <div class="skill-groups">
+        <div class="skill-group reveal">
+          <h3>Language & architecture</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">Kotlin</span><span class="skill-chip">Java</span><span class="skill-chip">MVVM</span>
+            <span class="skill-chip">Clean Architecture</span><span class="skill-chip">GetX</span><span class="skill-chip">Dagger Hilt</span>
+          </div>
+        </div>
+        <div class="skill-group reveal">
+          <h3>UI & motion</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">XML</span><span class="skill-chip">Material Design 3</span><span class="skill-chip">MotionLayout</span>
+            <span class="skill-chip">ObjectAnimator</span><span class="skill-chip">Lottie</span>
+          </div>
+        </div>
+        <div class="skill-group reveal">
+          <h3>Concurrency & networking</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">Coroutines</span><span class="skill-chip">Flows</span><span class="skill-chip">RxJava</span>
+            <span class="skill-chip">Retrofit</span><span class="skill-chip">Cronet</span><span class="skill-chip">WebSocket</span><span class="skill-chip">Ktor</span>
+          </div>
+        </div>
+        <div class="skill-group reveal">
+          <h3>Data, maps & backend</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">Room</span><span class="skill-chip">DataStore</span><span class="skill-chip">Google Maps SDK</span>
+            <span class="skill-chip">Places API</span><span class="skill-chip">Firebase Auth</span><span class="skill-chip">Firestore</span>
+            <span class="skill-chip">Crashlytics</span>
+          </div>
+        </div>
+        <div class="skill-group reveal">
+          <h3>Payments & other SDKs</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">Razorpay</span><span class="skill-chip">Stripe</span><span class="skill-chip">UPI</span>
+            <span class="skill-chip">Zoom SDK</span><span class="skill-chip">Twilio</span><span class="skill-chip">Pusher</span><span class="skill-chip">RTSP</span>
+          </div>
+        </div>
+        <div class="skill-group reveal">
+          <h3>Performance & release</h3>
+          <div class="skill-chips">
+            <span class="skill-chip">ProGuard / R8</span><span class="skill-chip">LeakCanary</span><span class="skill-chip">APK size reduction</span>
+            <span class="skill-chip">Play Store release</span><span class="skill-chip">Git / GitHub Actions</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-inner">
+      <div class="contact-panel reveal">
+        <h2>Building something Android-shaped? <span class="accent">Let's talk.</span></h2>
+        <div class="contact-right">
+          <a class="hire-btn" href="mailto:simranjeet.singhh.007@gmail.com?subject=Let%27s%20talk%20%E2%80%94%20Android%20role" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#04211D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            Hire me
+          </a>
+          <div class="contact-links">
+            <a href="mailto:simranjeet.singhh.007@gmail.com" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+              simranjeet.singhh.007@gmail.com
+            </a>
+            <a href="tel:+917078700318" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              +91 70787 00318
+            </a>
+            <a href="https://linkedin.com/in/simranjeet-singh-31248b219" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              linkedin.com/in/simranjeet-singh-31248b219
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Simranjeet Singh · Mohali, India · built with Kotlin in mind, HTML on the page</p>
+</footer>
+
+<script>
+  // hero route line draw + pin travel, once, respecting reduced motion
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var path = document.getElementById('routePath');
+    var pin = document.getElementById('pinWrap');
+    if(path){
+      var len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = reduce ? 0 : len;
+      if(!reduce){
+        path.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(.2,.7,.2,1) .2s';
+        requestAnimationFrame(function(){
+          requestAnimationFrame(function(){ path.style.strokeDashoffset = 0; });
+        });
+      }
+    }
+    if(pin && !reduce){
+      pin.style.animation = 'travel 1.8s cubic-bezier(.2,.7,.2,1) .2s forwards';
+    }
+    var styleTag = document.createElement('style');
+    styleTag.textContent = '@keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}';
+    document.head.appendChild(styleTag);
+    if(pin){ pin.style.offsetDistance = reduce ? '100%' : '0%'; }
+  })();
+
+  // timeline route-line draw once, on scroll into view
+  (function(){
+    var timeline = document.getElementById('timeline');
+    if(!timeline) return;
+    var setHeight = function(){
+      timeline.style.setProperty('--line-h', timeline.offsetHeight - 12 + 'px');
+    };
+    setHeight();
+    window.addEventListener('resize', setHeight);
+
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ timeline.classList.add('in-view'); return; }
+
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          timeline.classList.add('in-view');
+          obs.disconnect();
+        }
+      });
+    }, {threshold:0.25});
+    obs.observe(timeline);
+  })();
+
+  // nav shadow on scroll
+  (function(){
+    var header = document.querySelector('header');
+    if(!header) return;
+    var onScroll = function(){
+      header.classList.toggle('scrolled', window.scrollY > 8);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, {passive:true});
+  })();
+
+  // scroll-reveal with stagger, grouped by parent so siblings step in one after another
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var items = document.querySelectorAll('.reveal');
+    if(reduce || !items.length) return;
+
+    var groups = new Map();
+    items.forEach(function(el){
+      var parent = el.parentElement;
+      if(!groups.has(parent)) groups.set(parent, []);
+      groups.get(parent).push(el);
+    });
+    groups.forEach(function(list){
+      list.forEach(function(el, i){
+        el.style.transitionDelay = Math.min(i * 90, 360) + 'ms';
+      });
+    });
+
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          obs.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+    items.forEach(function(el){ obs.observe(el); });
+  })();
+
+  // count-up stats
+  (function(){
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var telemetry = document.getElementById('telemetry');
+    if(!telemetry) return;
+    var counts = telemetry.querySelectorAll('.count');
+
+    var run = function(){
+      counts.forEach(function(el){
+        var target = parseFloat(el.getAttribute('data-target'));
+        var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+        if(reduce){ el.textContent = target.toFixed(decimals); return; }
+        var start = performance.now();
+        var dur = 1200;
+        var tick = function(now){
+          var p = Math.min((now - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = (target * eased).toFixed(decimals);
+          if(p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    };
+
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ run(); obs.disconnect(); }
+      });
+    }, {threshold:0.4});
+    obs.observe(telemetry);
+  })();
+
+  // card spotlight + gentle tilt, pointer devices only
+  (function(){
+    if(!window.matchMedia('(hover:hover)').matches) return;
+    var cards = document.querySelectorAll('.card');
+    cards.forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        var r = card.getBoundingClientRect();
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        card.style.setProperty('--mx', x + 'px');
+        card.style.setProperty('--my', y + 'px');
+        var rx = ((y / r.height) - 0.5) * -6;
+        var ry = ((x / r.width) - 0.5) * 6;
+        card.style.setProperty('--rx', rx.toFixed(2) + 'deg');
+        card.style.setProperty('--ry', ry.toFixed(2) + 'deg');
+        card.style.setProperty('--ty', '-3px');
+      });
+      card.addEventListener('mouseleave', function(){
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+        card.style.setProperty('--ty', '0px');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
